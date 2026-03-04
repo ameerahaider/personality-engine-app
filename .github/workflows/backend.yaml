@@ -4,12 +4,13 @@ on:
   push:
     paths:
       - 'backend/**'
+      - '.github/workflows/backend.yaml'
     branches: [ "main" ]
 
 env:
   INFRA_REPO: "ameerahaider/personality-engine-infra"
   APP_PATH: "backend"
-  IMAGE_NAME: "registry.digitalocean.com/personality-engine-registry/backend"
+  IMAGE_NAME: "registry.digitalocean.com/personality-simulation-engine-registry/backend"
   MANIFEST_PATH: "gitops-manifests/backend-api.yaml"
 
 jobs:

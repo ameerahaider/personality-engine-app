@@ -7,9 +7,9 @@ on:
     branches: [ "main" ]
 
 env:
-  INFRA_REPO: "ameerahaider/personality-simulation-engine-infra"
+  INFRA_REPO: "ameerahaider/personality-engine-infra"
   APP_PATH: "frontend"
-  IMAGE_NAME: "registry.digitalocean.com/personality-simulation-engine-registry/frontend"
+  IMAGE_NAME: "registry.digitalocean.com/personality-engine-registry/frontend"
   MANIFEST_PATH: "gitops-manifests/frontend-web.yaml"
 
 jobs:

@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment Variables / Secrets
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+token.txt
+info.md
+
+# Build/Dist
+dist/
+build/
+.next/
+out/
+.cache/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.project
+.settings/
+.vscode_debug.js.maps
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Deployment/Infrastructure
+deployment/manifests/generated/
+
+# Logs
+logs/
+*.log

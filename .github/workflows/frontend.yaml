@@ -1,0 +1,59 @@
+name: Build and Push Frontend
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+    branches: [ "main" ]
+
+env:
+  INFRA_REPO: "ameerahaider/personality-simulation-engine-infra"
+  APP_PATH: "frontend"
+  IMAGE_NAME: "registry.digitalocean.com/personality-simulation-engine-registry/frontend"
+  MANIFEST_PATH: "gitops-manifests/frontend-web.yaml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Build and Push Docker image
+        run: |
+          # Define the unique tag
+          TAG="build-${{ github.run_id }}"
+          IMAGE="${{ env.IMAGE_NAME }}"
+          
+          # Build and push with the unique tag
+          docker build -t $IMAGE:$TAG ./${{ env.APP_PATH }}
+          docker push $IMAGE:$TAG
+
+
+      - name: Update Infra Repo Manifest
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }} 
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          
+          # 1. Clone your Infra Repo
+          git clone https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ env.INFRA_REPO }}.git infra-repo
+          cd infra-repo
+          
+          # 2. Use 'sed' to update the image tag in your yaml file
+          # This looks for the image line and swaps the tag
+          sed -i "s|image: ${{ env.IMAGE_NAME }}:.*|image: ${{ env.IMAGE_NAME }}:build-${{ github.run_id }}|g" ${{ env.MANIFEST_PATH }}
+          
+          # 3. Commit and Push back to the Infra Repo
+          git add ${{ env.MANIFEST_PATH }}
+          git commit -m "chore: update frontend image to build-${{ github.run_id }}"
+          git push
